@@ -1,0 +1,28 @@
+# ==================================
+# STAR MUSIC PLAYER .gitignore
+# ==================================
+
+# Android Studio / Gradle
+*.iml
+.gradle/
+/local.properties
+/.idea/
+/build/
+app/build/
+/captures/
+.externalNativeBuild/
+.cxx/
+
+# Keystore files (NEVER UPLOAD THESE)
+*.jks
+*.keystore
+
+# Mac / Windows OS files
+.DS_Store
+Thumbs.db
+
+# C++ Object files
+*.o
+*.obj
+*.so
+*.dll
