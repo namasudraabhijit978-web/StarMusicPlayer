@@ -1,53 +1,29 @@
-# =========================================================================
-# STAR MUSIC PLAYER: Native DSP Build Script
-# =========================================================================
-
-# Modern CMake version required for latest Android NDK
 cmake_minimum_required(VERSION 3.22.1)
-
-# Project name and language
 project("star_audio_engine" CXX)
 
-# Force Modern C++17 Standard for advanced DSP math features
-set(CMAKE_CXX_STANDARD 17)
+# Upgraded to C++20
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Optimize for speed (O3 level optimization for heavy audio processing)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -ffast-math -Wall")
+# Optimization & Compiler Flags (Disabled exceptions & rtti for raw DSP speed)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -ffast-math -Wall -fno-exceptions -fno-rtti")
 
-# 1. ADDING OBOE LIBRARY (The secret to Zero-Latency Audio)
-# Fetching Oboe from Prefab (Android's modern C++ package manager)
+# Requires 'buildFeatures { prefab = true }' in app/build.gradle.kts
 find_package(oboe REQUIRED CONFIG)
 
-# 2. DEFINING OUR CUSTOM C++ FILES
-# Saari C++ files jo Biquad aur Equalizer ka math handle karengi
-add_library(
-        star_audio_engine
-        SHARED
-        
-        # JNI Bridge
-        star_native_lib.cpp
-        
-        # DSP Engine (Aap yahan apni baki files add karenge)
-        dsp/BiquadFilter.cpp
-        dsp/AudioLimiter.cpp
-        
-        # Audio Player Core
-        engine/OboeAudioEngine.cpp
+# Scalable Source Globbing (Auto-detects all C++ files in folders)
+file(GLOB_RECURSE NATIVE_SRC
+    "dsp/*.cpp"
+    "engine/*.cpp"
+    "jni/*.cpp"
+    "*.cpp"
 )
 
-# 3. LINKING LIBRARIES TO OS
-# Connecting our code with Android's system libraries
-target_link_libraries(
-        star_audio_engine
-        
-        # Google's Oboe library for low-latency
-        oboe::oboe
-        
-        # Android Logging (Logcat mein C++ ke errors dekhne ke liye)
-        log
-        
-        # Android native libraries
-        android
-        OpenSLES
+add_library(star_audio_engine SHARED ${NATIVE_SRC})
+
+# Removed OpenSLES. Oboe handles internal routing.
+target_link_libraries(star_audio_engine
+    oboe::oboe
+    log
+    android
 )
