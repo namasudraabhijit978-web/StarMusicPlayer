@@ -2,56 +2,42 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- MODERN AUDIO PERMISSIONS (Android 13/14+) -->
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    
-    <!-- FALLBACK PERMISSIONS (For Android 12 and below) -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
-
-    <!-- FOREGROUND SERVICE (To keep music playing when screen is off) -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
-
-    <!-- WAKE LOCK (Prevents CPU from sleeping completely during heavy DSP math) -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <!-- HARDWARE OPTIMIZATION: Require devices with proper audio output -->
     <uses-feature android:name="android.hardware.audio.output" android:required="true" />
-    <uses-feature android:name="android.hardware.audio.pro" android:required="false" />
 
-    <!-- APP CONFIGURATION -->
     <application
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="STAR Music Player"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true"
         android:theme="@style/Theme.StarMusicPlayer"
-        android:hardwareAccelerated="true"
         tools:targetApi="34">
 
-        <!-- MAIN UI ACTIVITY -->
+        <!-- MainActivity -->
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- MODERN BACKGROUND MUSIC SERVICE -->
+        <!-- MODERN MEDIA3 SESSION SERVICE -->
         <service
             android:name=".player.StarMusicService"
-            android:exported="true"
+            android:exported="false"
             android:foregroundServiceType="mediaPlayback">
             <intent-filter>
-                <action android:name="android.media.browse.MediaBrowserService" />
+                <action android:name="androidx.media3.session.MediaSessionService" />
             </intent-filter>
         </service>
 
